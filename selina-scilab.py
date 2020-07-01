@@ -3,17 +3,21 @@
 
 import sys
 
-
-def main():
+import time
+'''
+import cv2
+import paddlex as pdx
+'''
+def main(argv):
     pass
 
 
-def usages(prg_name)
+def usages(prg_name):
     print("Usage:")
-    print("  %s: <cmd> <params>", %prg_name)
+    print("python  ./%s  <cmd> <params>" %prg_name)
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         usages(sys.argv[0])
-        return
-    main(sys.argv[1:])
+    else:
+      main(sys.argv[1:])
