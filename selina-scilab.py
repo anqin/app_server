@@ -10,7 +10,7 @@ import paddlex as pdx
 
 
 
-HOME_DIR = "D:/workspace/"
+HOME_DIR = "/Users/anqin/Documents/GitHub/app_server/"#"D:/workspace/"
 
 class Models(object):
     def __init__(self, home_dir, model_path, topk=3):
@@ -28,26 +28,26 @@ class Models(object):
         result = self.paddle_model.predict(image_path, topk=self.topk)
         #print("Predict Result:", result)
         self.parse_result(result)
-        
+
     def photo_capture_and_predict(self):
         cap = cv2.VideoCapture(0)
         num = 1
         captured_image_path = ""
         while(cap.isOpened()):
             ret_flag, Vshow = cap.read()
-            cv2.imshow("CaptureImage",Vshow) 
-            k = cv2.waitKey(1) & 0xFF 
+            cv2.imshow("CaptureImage",Vshow)
+            k = cv2.waitKey(1) & 0xFF
             if k == ord('s'):
                 captured_image_path = self.home_dir + str(num) + ".jpg"
                 cv2.imwrite(captured_image_path, Vshow)
-                print(cap.get(3)); 
+                print(cap.get(3));
                 print(cap.get(4));
                 print("success to save: " + captured_image_path)
                 num += 1
                 self.predict(captured_image_path)
-            elif k == ord('q'): 
+            elif k == ord('q'):
                 break
-        cap.release() 
+        cap.release()
         cv2.destroyAllWindows()
 
     def parse_result(self, results):
@@ -78,6 +78,6 @@ def main(argv):
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
-        usages(sys.argv[0])
+        usage(sys.argv[0])
     else:
         main(sys.argv[1:])
