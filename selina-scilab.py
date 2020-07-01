@@ -35,7 +35,7 @@ class Models(object):
         captured_image_path = ""
         while(cap.isOpened()):
             ret_flag, Vshow = cap.read()
-            cv2.imshow("CaptureImage",Vshow)
+            cv2.imshow("Capture Image",Vshow)
             k = cv2.waitKey(1) & 0xFF
             if k == ord('s'):
                 captured_image_path = self.home_dir + str(num) + ".jpg"
