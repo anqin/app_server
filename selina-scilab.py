@@ -10,7 +10,8 @@ import paddlex as pdx
 #import pyautogui as pgui
 
 
-HOME_DIR = "/Users/anqin/Documents/GitHub/app_server/"#"D:/workspace/"
+#HOME_DIR = "/Users/anqin/Documents/GitHub/app_server/"
+HOME_DIR = "D:/workspace/"
 
 class Models(object):
     def __init__(self, home_dir, model_path, topk=3):
@@ -30,7 +31,8 @@ class Models(object):
         return self.parse_result(result)
 
     def photo_capture_and_predict(self):
-        cap = cv2.VideoCapture(0)
+        cam_url = 'http://admin:930891@192.168.1.7:8081/video'
+        cap = cv2.VideoCapture(cam_url)
         num = 1
         captured_image_path = ""
         while(cap.isOpened()):
@@ -55,7 +57,7 @@ class Models(object):
         if len(results) == 0:
             print("无结果")
             return
-        msg = ("新鲜度：还剩余 %s 天 (准确度： %d)" %(results[0]['category'], results[0]['score']))
+        msg = ("新鲜度：还剩余 %s 天 (准确度： %.2f%%)" %(results[0]['category'], results[0]['score']*100))
         print(msg)
         return msg
 
