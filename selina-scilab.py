@@ -61,6 +61,37 @@ class Models(object):
         print(msg)
         return msg
 
+    def video_stream_predict_and_show(self):
+        cam_url = 'http://admin:930891@192.168.1.7:8081/video'
+        cap = cv2.VideoCapture(cam_url)
+        num = 1
+        captured_image_path = ""
+        while(cap.isOpened()):
+            ret_flag, Vshow = cap.read()
+            num += 1
+            if not ret_flag or num != 5:
+                continue
+            
+            num = 0
+
+            
+            captured_image_path = self.home_dir + "video_stream_temp.jpg"
+            cv2.imwrite(captured_image_path, Vshow)
+            print("success to save: " + captured_image_path)
+            
+            result = self.paddle_model.predict(capture_image_path)
+            pdx.det.visualize(capture_image_path, result, threshold=0.3, save_dir='./')
+            show_image_path = "./visualize_" + captured_image_path
+            if not os.path.exists(image_path):
+                print("Invalid path: ", image_path)
+                continue
+
+            cv2.imshow("CaptureImage", cv2.imread(show_image_path))
+            k = cv2.waitKey(1) & 0xFF
+            if k == ord('q'):
+                break
+        cap.release()
+        cv2.destroyAllWindows()
 
 def usage(prg):
     print("Usage: %s --model_path <path> --topk <number>" %prg)
@@ -72,6 +103,8 @@ def main(argv):
         model_path = argv[1]
     if argv[2] == "--topk":
         topk = int(argv[3])
+    else:
+        topk = 3
 
     if model_path == "" or topk == 0:
         print("model path should be empty or topk should not be zero")
