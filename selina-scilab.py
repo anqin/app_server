@@ -62,8 +62,9 @@ class Models(object):
         return msg
 
     def video_stream_predict_and_show(self):
-        cam_url = 'http://admin:930891@192.168.1.7:8081/video'
-        cap = cv2.VideoCapture(cam_url)
+        # cam_url = 'http://admin:930891@192.168.1.7:8081/video'
+        # cap = cv2.VideoCapture(cam_url)
+        cap = cv2.VideoCapture(0)
         num = 1
         captured_image_path = ""
         while(cap.isOpened()):
@@ -79,11 +80,11 @@ class Models(object):
             cv2.imwrite(captured_image_path, Vshow)
             print("success to save: " + captured_image_path)
             
-            result = self.paddle_model.predict(capture_image_path)
-            pdx.det.visualize(capture_image_path, result, threshold=0.3, save_dir='./')
+            result = self.paddle_model.predict(captured_image_path)
+            pdx.det.visualize(captured_image_path, result, threshold=0.3, save_dir='./')
             show_image_path = "./visualize_" + captured_image_path
-            if not os.path.exists(image_path):
-                print("Invalid path: ", image_path)
+            if not os.path.exists(show_image_path):
+                print("Invalid path: ", show_image_path)
                 continue
 
             cv2.imshow("CaptureImage", cv2.imread(show_image_path))
@@ -97,12 +98,16 @@ def usage(prg):
     print("Usage: %s --model_path <path> --topk <number>" %prg)
 
 def main(argv):
+    model_type = 'image_classify'
     model_path = ""
     topk = 0
-    if argv[0] == "--model_path":
-        model_path = argv[1]
-    if argv[2] == "--topk":
-        topk = int(argv[3])
+    if argv[0] == "--model_type":
+        model_type = argv[1]
+
+    if argv[2] == "--model_path":
+        model_path = argv[3]
+    if len(argv) > 4 and argv[4] == "--topk":
+        topk = int(argv[5])
     else:
         topk = 3
 
@@ -112,10 +117,13 @@ def main(argv):
         return
     print(model_path, topk)
     my_model = Models(HOME_DIR, model_path, topk)
-    my_model.photo_capture_and_predict()
+    if model_type == "yolo":
+        my_model.video_stream_predict_and_show()
+    else:
+        my_model.photo_capture_and_predict()
 
 if __name__ == "__main__":
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 3:
         usage(sys.argv[0])
     else:
         main(sys.argv[1:])
