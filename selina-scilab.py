@@ -62,9 +62,9 @@ class Models(object):
         return msg
 
     def video_stream_predict_and_show(self):
-        # cam_url = 'http://admin:930891@192.168.1.7:8081/video'
-        # cap = cv2.VideoCapture(cam_url)
-        cap = cv2.VideoCapture(0)
+        cam_url = 'http://admin:930891@192.168.43.87:8081/video'
+        cap = cv2.VideoCapture(cam_url)
+        #cap = cv2.VideoCapture(0)
         num = 1
         captured_image_path = ""
         while(cap.isOpened()):
@@ -75,19 +75,22 @@ class Models(object):
             
             num = 0
 
+            result = self.paddle_model.predict(Vshow)
+            output_frame = pdx.det.visualize(Vshow, result, threshold=0.3, save_dir = None)
+            cv2.imshow("CaptureImage", output_frame)
             
-            captured_image_path = self.home_dir + "video_stream_temp.jpg"
-            cv2.imwrite(captured_image_path, Vshow)
-            print("success to save: " + captured_image_path)
+            #captured_image_path = self.home_dir + "video_stream_temp.jpg"
+            #cv2.imwrite(captured_image_path, Vshow)
+            #print("success to save: " + captured_image_path)
             
-            result = self.paddle_model.predict(captured_image_path)
-            pdx.det.visualize(captured_image_path, result, threshold=0.3, save_dir='./')
-            show_image_path = "./visualize_" + captured_image_path
-            if not os.path.exists(show_image_path):
-                print("Invalid path: ", show_image_path)
-                continue
+            #result = self.paddle_model.predict(captured_image_path)
+            #pdx.det.visualize(captured_image_path, result, threshold=0.3, save_dir='./')
+            #show_image_path = "./visualize_" + captured_image_path
+            #if not os.path.exists(show_image_path):
+            #    print("Invalid path: ", show_image_path)
+            #    continue
 
-            cv2.imshow("CaptureImage", cv2.imread(show_image_path))
+            #cv2.imshow("CaptureImage", cv2.imread(show_image_path))
             k = cv2.waitKey(1) & 0xFF
             if k == ord('q'):
                 break
