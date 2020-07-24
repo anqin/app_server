@@ -62,7 +62,7 @@ class Models(object):
         return msg
 
     def video_stream_predict_and_show(self):
-        cam_url = 'http://admin:930891@192.168.43.87:8081/video'
+        cam_url = 'http://admin:930891@192.168.1.7:8081/video'
         cap = cv2.VideoCapture(cam_url)
         #cap = cv2.VideoCapture(0)
         num = 1
@@ -71,6 +71,7 @@ class Models(object):
             ret_flag, Vshow = cap.read()
             num += 1
             if not ret_flag or num != 5:
+                cv2.imshow("CaptureImage", Vshow)
                 continue
             
             num = 0
