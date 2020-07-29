@@ -65,6 +65,7 @@ class Models(object):
     def video_stream_predict_and_show(self):
         print('==== YOLO =====')
         cam_url = 'http://admin:930891@192.168.43.87:8081/video'
+        #cam_url = 'http://admin:930891@192.168.1.7:8081/video'
         cap = cv2.VideoCapture(cam_url)
         #cap = cv2.VideoCapture(0)
         num = 1
@@ -74,7 +75,6 @@ class Models(object):
             num += 1
             #if not ret_flag or num != 2:
             #    continue
-            
             num = 0
 
             result = self.paddle_model.predict(Vshow)
