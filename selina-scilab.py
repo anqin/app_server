@@ -18,7 +18,8 @@ class Models(object):
         self.model_path = model_path
         self.home_dir = home_dir
         self.topk = topk
-        self.paddle_model = pdx.load_model(model_path)
+        #self.paddle_model = pdx.load_model(model_path)
+        self.paddle_model = pdx.deploy.Predictor(model_path, use_gpu=False, use_mkl=True, mkl_thread_num=10)
 
     def predict(self, image_path):
         time.sleep(1)
@@ -62,6 +63,7 @@ class Models(object):
         return msg
 
     def video_stream_predict_and_show(self):
+        print('==== YOLO =====')
         cam_url = 'http://admin:930891@192.168.43.87:8081/video'
         cap = cv2.VideoCapture(cam_url)
         #cap = cv2.VideoCapture(0)
@@ -70,13 +72,13 @@ class Models(object):
         while(cap.isOpened()):
             ret_flag, Vshow = cap.read()
             num += 1
-            if not ret_flag or num != 5:
-                continue
+            #if not ret_flag or num != 2:
+            #    continue
             
             num = 0
 
             result = self.paddle_model.predict(Vshow)
-            output_frame = pdx.det.visualize(Vshow, result, threshold=0.3, save_dir = None)
+            output_frame = pdx.det.visualize(Vshow, result, threshold=0.02, save_dir = None)
             cv2.imshow("CaptureImage", output_frame)
             
             #captured_image_path = self.home_dir + "video_stream_temp.jpg"
