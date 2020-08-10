@@ -12,6 +12,7 @@ known_face_encodings=[]
 for i in img_path:
     picture_name=i.replace('D:\\workspace\\github\\app_server\\face_detect\photo\\','')
     picture_newname=picture_name.replace('.png','')
+    print("new name: " + picture_newname)
     someone_img = face_recognition.load_image_file(i)
     someone_face_encoding = face_recognition.face_encodings(someone_img)[0]
     known_face_names.append(picture_newname)
@@ -38,7 +39,7 @@ while True:
         for i in face_encodings:
                 match = face_recognition.compare_faces(known_face_encodings,i,tolerance=0.5)
                 face_distances = face_recognition.face_distance(known_face_encodings, i)
-                print(face_distances)
+                #print(face_distances)
                 if True in match:
                     match_index=match.index(True)
                     name = "match"
