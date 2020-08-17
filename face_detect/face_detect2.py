@@ -4,7 +4,7 @@ import cv2
 import datetime
 import glob2 as gb
  
-video_capture = cv2.VideoCapture(0)
+video_capture = cv2.VideoCapture("./photo/video.mp4")
 img_path=gb.glob(r'D:\workspace\github\app_server\face_detect\photo\\*.png')
 known_face_names=[]
 known_face_encodings=[]
