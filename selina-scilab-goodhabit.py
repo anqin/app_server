@@ -18,8 +18,12 @@ HOME_DIR = "D:/workspace/"
 
 
 def eng2chn(label):
-    keywords_eng = ['scissors', 'cell phone', 'book', 'knife']
-    keywords_chn = ['剪刀: 请放回文具盒', '手机：请放回指定位置', '书本：请放回书架', '刀子：请放回指定位置']
+    keywords_eng = ['scissors', 'cell phone', 'book', 'knife',
+            'sports ball', 'bench', 'backpack', 'handbag', 'chair'
+            'teddy bear']
+    keywords_chn = ['剪刀: 请放回文具盒', '手机：请放回指定位置', '书本：请放回书架', '刀子：请放回指定位置',
+            '玩具球：请放回篮子', '凳子：请摆好位置', '背包：请挂起来', '手提包：请挂起来', '椅子：请摆放好',
+            '玩具熊：请放指定位置']
     if label in keywords_eng:
         loc = keywords_eng.index(label)
         keyword = keywords_chn[loc]
