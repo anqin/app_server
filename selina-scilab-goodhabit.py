@@ -8,12 +8,33 @@ import time
 import cv2
 import paddlex as pdx
 #import pyautogui as pgui
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 
 
 #HOME_DIR = "/Users/anqin/Documents/GitHub/app_server/"
 HOME_DIR = "D:/workspace/"
 
-keyword_list = ["bird", "cell phone"]
+
+
+def eng2chn(label):
+    keywords_eng = ['scissors', 'cell phone', 'book', 'knife']
+    keywords_chn = ['剪刀', '手机', '书本', '刀子']
+    loc = keywords_eng.index(label)
+    keyword = keywords_chn[loc]
+    return keyword
+
+def cv2img_add_text(img, text, left, top, textColor=(255, 0, 0), textSize=20):
+    if (isinstance(img, np.ndarray)):
+        img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+    draw = ImageDraw.Draw(img)
+    fontStyle = ImageFont.truetype("font/simsun.ttc", textSize, encoding="utf-8")
+    draw.text((left, top), text, textColor, font=fontStyle)
+    result = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
+    return result
+
+def custom_visualize(img, results, threshold):
+    pass
 
 class Models(object):
     def __init__(self, home_dir, model_path, topk=3):
@@ -109,7 +130,7 @@ class Models(object):
             if r["category"] in keyword_list:
                 #print("=== found ===")
                 #print(r)
-                r["category"] = "cell phone: return"
+                r["category"] = "cell phone: 放到书架上"
                 new_ret.append(r)
         print(new_ret)
         return new_ret
