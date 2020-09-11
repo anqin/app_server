@@ -19,22 +19,40 @@ HOME_DIR = "D:/workspace/"
 
 def eng2chn(label):
     keywords_eng = ['scissors', 'cell phone', 'book', 'knife']
-    keywords_chn = ['剪刀', '手机', '书本', '刀子']
-    loc = keywords_eng.index(label)
-    keyword = keywords_chn[loc]
-    return keyword
+    keywords_chn = ['剪刀: 请放回文具盒', '手机：请放回指定位置', '书本：请放回书架', '刀子：请放回指定位置']
+    if label in keywords_eng:
+        loc = keywords_eng.index(label)
+        keyword = keywords_chn[loc]
+        return keyword
+    return None
 
 def cv2img_add_text(img, text, left, top, textColor=(255, 0, 0), textSize=20):
     if (isinstance(img, np.ndarray)):
         img = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(img)
-    fontStyle = ImageFont.truetype("font/simsun.ttc", textSize, encoding="utf-8")
+    fontStyle = ImageFont.truetype("C:\Windows\Fonts\SIMLI.TTF", textSize, encoding="utf-8")
     draw.text((left, top), text, textColor, font=fontStyle)
     result = cv2.cvtColor(np.asarray(img), cv2.COLOR_RGB2BGR)
     return result
 
 def custom_visualize(img, results, threshold):
-    pass
+    ret_list = []
+    for r in results:
+       category = r["category"]
+       label_cn = eng2chn(category)
+       if label_cn == None:
+           continue
+       if r['score'] < threshold:
+           continue
+       ret_list.append(r)
+       #text = "{}: {:.4f}".format(label_cn, r['score'])
+       text = label_cn
+       bbox = r['bbox']
+       xx = (bbox[0],bbox[1])
+       yy = (bbox[2],bbox[3])
+       #cv2.rectangle(img, xx, yy, (0, 0, 255), 2)
+       img = cv2img_add_text(img, text, bbox[0]+3, bbox[1]+20)
+    return img, ret_list
 
 class Models(object):
     def __init__(self, home_dir, model_path, topk=3):
@@ -102,8 +120,9 @@ class Models(object):
 
             result = self.paddle_model.predict(Vshow)
             #print(result)
-            self.filter_specifc_items(result, keyword_list)
-            output_frame = pdx.det.visualize(Vshow, result, threshold=0.02, save_dir = None)
+            result = self.filter_specifc_items(result)
+            output_frame = pdx.det.visualize(Vshow, result, threshold=0.03, save_dir = None)
+            output_frame, ret_list = custom_visualize(output_frame, result, 0.03)
             cv2.imshow("CaptureImage", output_frame)
             
             #captured_image_path = self.home_dir + "video_stream_temp.jpg"
@@ -124,14 +143,12 @@ class Models(object):
         cap.release()
         cv2.destroyAllWindows()
 
-    def filter_specifc_items(self, results, keyword_list):
+    def filter_specifc_items(self, results):
         new_ret = []
         for r in results:
-            if r["category"] in keyword_list:
-                #print("=== found ===")
-                #print(r)
-                r["category"] = "cell phone: 放到书架上"
-                new_ret.append(r)
+            if eng2chn(r['category']) == None:
+                continue
+            new_ret.append(r)
         print(new_ret)
         return new_ret
 
